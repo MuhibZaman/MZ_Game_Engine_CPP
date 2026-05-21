@@ -6,6 +6,8 @@
 #include <string>
 
 namespace lve {
+    //Our custom window itself
+    //Stores: width, height, and name
     class LveWindow {
         private:
             //Helper Function to initialize window
@@ -17,6 +19,8 @@ namespace lve {
             std::string windowName;
             
             //Pointer to GFLFW window
+            //GLFW talks to OS and window manager
+            //Handles window creation, input, and event loop
             GLFWwindow *window;
 
         public:

@@ -2,18 +2,22 @@
 #pragma once
 
 #include "lve_window.hpp"
+#include "lve_pipeline.hpp"
 
 namespace lve {
     class FirstApp {
         private:
-            //lve window variable
+            //lve window variable using member initialization
             LveWindow lveWindow{WIDTH, HEIGHT, "Hello Vulkan!"}; //No pointer or dynamic memory allocaiton
-        
+            LvePipeline lvePipeline{"shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv"}; //Path relative to exe
+            
+
         public:
             //Const width and height variables
             static constexpr int WIDTH = 800;
             static constexpr int HEIGHT = 600;
 
+            //What the app does
             void run();
     };
 } //namespace lve
