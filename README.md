@@ -5,5 +5,5 @@ Build using make
 
 Current Progress:
     Completed graphics pipeline creation.
-    Pipeline configuration incomplete.
-    Opens a black window and crashes, printing out debugging error.
+    Pipeline configuration complete.
+    Opens a black window.

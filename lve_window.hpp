@@ -34,11 +34,12 @@ namespace lve {
             //Resource acquisition = initializaiton
             //Resource creation happens when variables are initialized
             //Cleanups are performed by constructors
-            LveWindow(const LveWindow&) = delete;
-            LveWindow &operator = (const LveWindow&) = delete;
+            LveWindow(const LveWindow &) = delete;
+            LveWindow &operator = (const LveWindow &) = delete;
 
             //Inline implementation calling glfw function quering if user has tried to dismiss the window
-            bool shouldClose() { return glfwWindowShouldClose(window); };
+            bool shouldClose() { return glfwWindowShouldClose(window); }
+            VkExtent2D getExtent() { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}; }
 
             void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
     };
