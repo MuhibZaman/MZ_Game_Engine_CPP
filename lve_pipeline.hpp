@@ -8,8 +8,21 @@
 
 namespace lve {
     //Contains data specifying how we want to configure our pipeline
-    struct PipelineConfigInfo {}; //Allows applciation to configure pipeline completely and share configs
-
+    struct PipelineConfigInfo {
+        VkViewport viewport;
+        VkRect2D scissor;
+        VkPipelineViewportStateCreateInfo viewportInfo;
+        VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+        VkPipelineRasterizationStateCreateInfo rasterizationInfo;
+        VkPipelineMultisampleStateCreateInfo multisampleInfo;
+        VkPipelineColorBlendAttachmentState colorBlendAttachment;
+        VkPipelineColorBlendStateCreateInfo colorBlendInfo;
+        VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+        VkPipelineLayout pipelineLayout = nullptr;
+        VkRenderPass renderPass = nullptr;
+        uint32_t subpass = 0;
+    }; //Allows applciation to configure pipeline completely and share configs
+    
     class LvePipeline {
         private:
             static std::vector<char> readFile(const std::string &filepath);
@@ -36,7 +49,7 @@ namespace lve {
                 const PipelineConfigInfo &configInfo
             );
 
-            ~LvePipeline() {}
+            ~LvePipeline();
 
             LvePipeline(const LvePipeline &) = delete;
             void operator = (const LvePipeline &) = delete;
