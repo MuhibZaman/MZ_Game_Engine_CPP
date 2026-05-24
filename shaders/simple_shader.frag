@@ -5,5 +5,5 @@ layout (location = 0) out vec4 outColor; //Fragment shader can output to multipl
 
 void main() {
     //Red, Green, Blue, and Alpha; 0-1
-    outColor = vec4(1.0, 0.0, 0.0, 1.0);
+    outColor = vec4(1.0, 1.0, 0.0, 1.0);
 }

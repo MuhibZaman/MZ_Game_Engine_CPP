@@ -9,6 +9,9 @@
 namespace lve {
     //Contains data specifying how we want to configure our pipeline
     struct PipelineConfigInfo {
+        PipelineConfigInfo(const PipelineConfigInfo &) = delete;
+        PipelineConfigInfo& operator=(const PipelineConfigInfo &) = delete;
+
         VkViewport viewport;
         VkRect2D scissor;
         VkPipelineViewportStateCreateInfo viewportInfo;
@@ -54,6 +57,8 @@ namespace lve {
             LvePipeline(const LvePipeline &) = delete;
             void operator = (const LvePipeline &) = delete;
 
-            static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width, uint32_t height);
+            static void defaultPipelineConfigInfo(PipelineConfigInfo &configInfo, uint32_t width, uint32_t height);
+
+            void bind(VkCommandBuffer commandBuffer);
     };
 } //namespace lve

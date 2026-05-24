@@ -6,4 +6,6 @@ Build using make
 Current Progress:
     Completed graphics pipeline creation.
     Pipeline configuration complete.
-    Opens a black window.
+    Command Buffer creation and recording complete.
+    Makefile now also compiled shaders.
+    Opens a black window with a yellow triangle.
