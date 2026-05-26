@@ -5,6 +5,7 @@
 #include "lve_pipeline.hpp"
 #include "lve_device.hpp"
 #include "lve_swap_chain.hpp"
+#include "lve_model.hpp"
 
 //std
 #include <memory>
@@ -21,12 +22,15 @@ namespace lve {
 
             VkPipelineLayout pipelineLayout;
             std::vector<VkCommandBuffer> commandBuffers;
+            std::unique_ptr<LveModel> lveModel;
 
             void createPipelineLayout();
             void createPipeline();
             void createCommandBuffers();
 
             void drawFrame();
+
+            void loadModels();
             
         public:
             //Const width and height variables

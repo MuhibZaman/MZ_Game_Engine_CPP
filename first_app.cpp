@@ -7,6 +7,7 @@
 
 namespace lve {
     FirstApp::FirstApp() {
+        loadModels();
         createPipelineLayout();
         createPipeline();
         createCommandBuffers();
@@ -25,6 +26,42 @@ namespace lve {
         }
 
         vkDeviceWaitIdle(lveDevice.device());
+    }
+
+    void FirstApp::fractal(std::vector<LveModel::Vertex> *vertices, LveModel::Vertex one, LveModel::Vertex two, LveModel::Vertex three, int depth) {
+        if(depth == 5) {
+            vertices->push_back(one);
+            vertices->push_back(two);
+            vertices->push_back(three);
+            return;
+        }
+        
+        float newOne_x = (one.position[0] + two.position[0]) / 2.0f;
+        float newOne_y = (one.position[1] + two.position[1]) / 2.0f;
+        LveModel::Vertex midOne = {{newOne_x, newOne_y}};
+
+        float newTwo_x = (two.position[0] + three.position[0]) / 2.0f;
+        float newTwo_y = (two.position[1] + three.position[1]) / 2.0f;
+        LveModel::Vertex midTwo = {{newTwo_x, newTwo_y}};
+
+        float newThree_x = (three.position[0] + one.position[0]) / 2.0f;
+        float newThree_y = (three.position[1] + one.position[1]) / 2.0f;
+        LveModel::Vertex midThree = {{newThree_x, newThree_y}};
+
+        fractal(vertices, one, midOne, midThree, depth + 1);
+        fractal(vertices, midOne, two, midTwo, depth + 1);
+        fractal(vertices, midThree, midTwo, three, depth + 1);
+    }
+
+    void FirstApp::loadModels() {
+        std::vector<LveModel::Vertex> vertices;
+        fractal(&vertices,
+            {{0.0f, -0.5f}},
+            {{0.5f, 0.5f}},
+            {{-0.5f, 0.5f}},
+            0
+        );
+        lveModel = std::make_unique<LveModel>(lveDevice, vertices);
     }
 
     void FirstApp::createPipelineLayout() {
@@ -92,7 +129,8 @@ namespace lve {
             vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             lvePipeline->bind(commandBuffers[i]);
-            vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+            lveModel->bind(commandBuffers[i]);
+            lveModel->draw(commandBuffers[i]);
 
             vkCmdEndRenderPass(commandBuffers[i]);
             if(vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {

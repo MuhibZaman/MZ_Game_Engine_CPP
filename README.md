@@ -8,4 +8,5 @@ Current Progress:
     Pipeline configuration complete.
     Command Buffer creation and recording complete.
     Makefile now also compiled shaders.
-    Opens a black window with a yellow triangle.
+    Implemented vertex buffer, removing the need for hard coded vertices.
+    Opens a black window with a yellow sierpinski triangle.
