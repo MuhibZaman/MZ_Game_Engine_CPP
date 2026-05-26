@@ -17,7 +17,7 @@ namespace lve {
             //lve window variable using member initialization
             LveWindow lveWindow{WIDTH, HEIGHT, "Hello Vulkan!"}; //No pointer or dynamic memory allocaiton
             LveDevice lveDevice{lveWindow};
-            LveSwapChain lveSwapChain{lveDevice, lveWindow.getExtent()};
+            std::unique_ptr<LveSwapChain> lveSwapChain;
             std::unique_ptr<LvePipeline> lvePipeline; //Automatic pointer management
 
             VkPipelineLayout pipelineLayout;
@@ -29,8 +29,11 @@ namespace lve {
             void createCommandBuffers();
 
             void drawFrame();
-
             void loadModels();
+
+            void recreateSwapChain();
+            void recordCommandBuffer(int imageIndex);
+            void freeCommandBuffers();
             
         public:
             //Const width and height variables

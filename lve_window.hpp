@@ -10,11 +10,13 @@ namespace lve {
     //Stores: width, height, and name
     class LveWindow {
         private:
-            //Helper Function to initialize window
             void initWindow();
-            //Variables holding window width and height
-            const int width;
-            const int height;
+            static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
+
+            //Variables window sizing
+            int width;
+            int height;
+            bool framebufferResized = false;
             //Variable holding window name
             std::string windowName;
             
@@ -40,6 +42,8 @@ namespace lve {
             //Inline implementation calling glfw function quering if user has tried to dismiss the window
             bool shouldClose() { return glfwWindowShouldClose(window); }
             VkExtent2D getExtent() { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}; }
+            bool wasWindowResized() { return framebufferResized; }
+            void resetWindowResizedFrag() { framebufferResized = false; }
 
             void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
     };
