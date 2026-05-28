@@ -13,4 +13,5 @@ Current Progress:
         Added call back to glfw window that listens for window resizing.
         Recreates swapchain when window was resized.
         Pipeline no longer depends on swapchains dimensions due to dynamic viewport and scissor.
-    Opens a gray window with a rainbow sierpinski triangle.
+    Added push constant implementaion.
+    Opens a gray window with a blue sierpinski triangle that moves to the right repeatedly.
