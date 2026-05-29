@@ -5,7 +5,7 @@
 #include "lve_pipeline.hpp"
 #include "lve_device.hpp"
 #include "lve_swap_chain.hpp"
-#include "lve_model.hpp"
+#include "lve_game_object.hpp"
 
 //std
 #include <memory>
@@ -13,28 +13,6 @@
 
 namespace lve {
     class FirstApp {
-        private:
-            //lve window variable using member initialization
-            LveWindow lveWindow{WIDTH, HEIGHT, "Hello Vulkan!"}; //No pointer or dynamic memory allocaiton
-            LveDevice lveDevice{lveWindow};
-            std::unique_ptr<LveSwapChain> lveSwapChain;
-            std::unique_ptr<LvePipeline> lvePipeline; //Automatic pointer management
-
-            VkPipelineLayout pipelineLayout;
-            std::vector<VkCommandBuffer> commandBuffers;
-            std::unique_ptr<LveModel> lveModel;
-
-            void createPipelineLayout();
-            void createPipeline();
-            void createCommandBuffers();
-
-            void drawFrame();
-            void loadModels();
-
-            void recreateSwapChain();
-            void recordCommandBuffer(int imageIndex);
-            void freeCommandBuffers();
-            
         public:
             //Const width and height variables
             static constexpr int WIDTH = 800;
@@ -48,5 +26,29 @@ namespace lve {
 
             //What the app does
             void run();
+            
+        private:
+            //lve window variable using member initialization
+            LveWindow lveWindow{WIDTH, HEIGHT, "Hello Vulkan!"}; //No pointer or dynamic memory allocaiton
+            LveDevice lveDevice{lveWindow};
+            std::unique_ptr<LveSwapChain> lveSwapChain;
+            std::unique_ptr<LvePipeline> lvePipeline; //Automatic pointer management
+
+            VkPipelineLayout pipelineLayout;
+            std::vector<VkCommandBuffer> commandBuffers;
+            std::vector<LveGameObject> gameObjects;
+
+            void createPipelineLayout();
+            void createPipeline();
+            void createCommandBuffers();
+
+            void drawFrame();
+            void loadGameObjects();
+            void renderGameObjects(VkCommandBuffer commandBuffer);
+
+            void recreateSwapChain();
+            void recordCommandBuffer(int imageIndex);
+            void freeCommandBuffers();
+            
     };
 } //namespace lve

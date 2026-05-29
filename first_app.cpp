@@ -4,6 +4,7 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 
 //std
 #include <stdexcept>
@@ -13,12 +14,13 @@
 namespace lve {
     //Temporary
     struct SimplePushConstantData {
+        glm::mat2 transform{1.0f};
         glm::vec2 offset;
         alignas(16) glm::vec3 color;
     };
 
     FirstApp::FirstApp() {
-        loadModels();
+        loadGameObjects();
         createPipelineLayout();
         recreateSwapChain();
         createCommandBuffers();
@@ -64,7 +66,7 @@ namespace lve {
         fractal(vertices, midThree, midTwo, three, depth + 1);
     }
 
-    void FirstApp::loadModels() {
+    void FirstApp::loadGameObjects() {
         std::vector<LveModel::Vertex> vertices;
         fractal(&vertices,
             {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
@@ -72,7 +74,40 @@ namespace lve {
             {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
             0
         );
-        lveModel = std::make_unique<LveModel>(lveDevice, vertices);
+
+        /*
+        auto lveModel = std::make_shared<LveModel>(lveDevice, vertices); //One model instance used by multiple game objects
+
+        auto triangle = LveGameObject::createGameObject();
+        triangle.model = lveModel;
+        triangle.color = {0.1f, 0.8f, 0.1f};
+        triangle.transform2d.translation.x = 0.2f;
+        triangle.transform2d.scale = {2.0f, 0.5f};
+        triangle.transform2d.rotation = 0.25f * glm::two_pi<float>(); //Using radians
+
+        gameObjects.push_back(std::move(triangle)); */
+
+        std::vector<LveModel::Vertex> tmpVertices;
+        int i = 0;
+        for(auto &vertex : vertices) {
+            tmpVertices.push_back(vertex);
+            i++;
+            if(i == 3) {
+                auto lveModel = std::make_shared<LveModel>(lveDevice, tmpVertices); //One model instance used by multiple game objects
+
+                auto triangle = LveGameObject::createGameObject();
+                triangle.model = lveModel;
+                triangle.color = {0.1f, 0.8f, 0.1f};
+                // triangle.transform2d.translation;
+                // triangle.transform2d.scale;
+                triangle.transform2d.rotation = 0.25f * glm::two_pi<float>(); //Using radians
+
+                gameObjects.push_back(std::move(triangle));
+
+                i = 0;
+                tmpVertices.clear();
+            }
+        }
     }
 
     void FirstApp::createPipelineLayout() {
@@ -158,9 +193,6 @@ namespace lve {
     }
 
     void FirstApp::recordCommandBuffer(int imageIndex) {
-        static int frame = 0;
-        frame = (frame + 1) % 100;
-
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -196,29 +228,39 @@ namespace lve {
         vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
         vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
 
-        lvePipeline->bind(commandBuffers[imageIndex]);
-        lveModel->bind(commandBuffers[imageIndex]);
-        for(int j = 0; j < 4; j++) {
-            SimplePushConstantData push{};
-            push.offset = {-0.5f + frame * 0.01f, -0.4f + j * 0.25f};
-            push.color = {0.0f, 0.0f, 0.2 + 0.2f * j};
-
-            vkCmdPushConstants(commandBuffers[imageIndex],
-                pipelineLayout,
-                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-                0,
-                sizeof(SimplePushConstantData),
-                &push
-            );
-            lveModel->draw(commandBuffers[imageIndex]);
-        }
+        renderGameObjects(commandBuffers[imageIndex]);
 
         vkCmdEndRenderPass(commandBuffers[imageIndex]);
         if(vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
             throw std::runtime_error("failed to recond command buffers!");
         }
     }
-            
+
+    void FirstApp::renderGameObjects(VkCommandBuffer commandBuffer) {
+        lvePipeline->bind(commandBuffer);
+
+        int i = 1;
+        for(auto &obj : gameObjects) {
+            i = i * -1;
+            SimplePushConstantData push{};
+            push.offset = obj.transform2d.translation;
+            obj.transform2d.rotation = glm::mod(obj.transform2d.rotation + (0.01f * i), glm::two_pi<float>()); //With game objects class, we can manipulate each object frame to frame
+            push.color = obj.color;
+            push.transform = obj.transform2d.mat2();
+
+            vkCmdPushConstants(commandBuffer,
+                pipelineLayout,
+                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(SimplePushConstantData),
+                &push
+            );
+
+            obj.model->bind(commandBuffer);
+            obj.model->draw(commandBuffer);
+        }
+    }   
+
     void FirstApp::drawFrame() {
         uint32_t imageIndex;
         auto result = lveSwapChain->acquireNextImage(&imageIndex); //Index of frame we should render to next , and hangles CPU-GPU synchronizations

@@ -9,22 +9,6 @@ namespace lve {
     //Our custom window itself
     //Stores: width, height, and name
     class LveWindow {
-        private:
-            void initWindow();
-            static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
-
-            //Variables window sizing
-            int width;
-            int height;
-            bool framebufferResized = false;
-            //Variable holding window name
-            std::string windowName;
-            
-            //Pointer to GFLFW window
-            //GLFW talks to OS and window manager
-            //Handles window creation, input, and event loop
-            GLFWwindow *window;
-
         public:
             //Constructor
             LveWindow(int w, int h, std::string name);
@@ -46,5 +30,21 @@ namespace lve {
             void resetWindowResizedFrag() { framebufferResized = false; }
 
             void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
+
+        private:
+            void initWindow();
+            static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
+
+            //Variables window sizing
+            int width;
+            int height;
+            bool framebufferResized = false;
+            //Variable holding window name
+            std::string windowName;
+            
+            //Pointer to GFLFW window
+            //GLFW talks to OS and window manager
+            //Handles window creation, input, and event loop
+            GLFWwindow *window;
     };
 } //namespace lve

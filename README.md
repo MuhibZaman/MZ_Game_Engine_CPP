@@ -14,4 +14,5 @@ Current Progress:
         Recreates swapchain when window was resized.
         Pipeline no longer depends on swapchains dimensions due to dynamic viewport and scissor.
     Added push constant implementaion.
-    Opens a gray window with a blue sierpinski triangle that moves to the right repeatedly.
+    Added game object class that holds models and transformations
+    Opens a gray window with a blue sierpinski triangle. Some of the triangles will be spinning clockwise while others counter-clockwise.

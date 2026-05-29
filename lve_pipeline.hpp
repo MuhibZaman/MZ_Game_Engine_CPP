@@ -27,6 +27,23 @@ namespace lve {
     }; //Allows applciation to configure pipeline completely and share configs
     
     class LvePipeline {
+       public:
+            LvePipeline(
+                LveDevice &device,
+                const std::string &vertFilepath,
+                const std::string &fragFilepath,
+                const PipelineConfigInfo &configInfo
+            );
+
+            ~LvePipeline();
+
+            LvePipeline(const LvePipeline &) = delete;
+            LvePipeline &operator = (const LvePipeline &) = delete;
+
+            static void defaultPipelineConfigInfo(PipelineConfigInfo &configInfo);
+
+            void bind(VkCommandBuffer commandBuffer);
+
         private:
             static std::vector<char> readFile(const std::string &filepath);
 
@@ -43,22 +60,5 @@ namespace lve {
             VkPipeline graphicsPipeline;
             VkShaderModule vertShaderModule;
             VkShaderModule fragShaderModule;
-
-        public:
-            LvePipeline(
-                LveDevice &device,
-                const std::string &vertFilepath,
-                const std::string &fragFilepath,
-                const PipelineConfigInfo &configInfo
-            );
-
-            ~LvePipeline();
-
-            LvePipeline(const LvePipeline &) = delete;
-            LvePipeline &operator = (const LvePipeline &) = delete;
-
-            static void defaultPipelineConfigInfo(PipelineConfigInfo &configInfo);
-
-            void bind(VkCommandBuffer commandBuffer);
     };
 } //namespace lve

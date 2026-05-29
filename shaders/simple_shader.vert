@@ -7,6 +7,7 @@ layout(location = 1) in vec3 color; //Color attribute
 //layout(location = 0) out vec3 fragColor; //Color passed to fragment shader
 
 layout(push_constant) uniform Push {
+    mat2 transform;
     vec2 offset;
     vec3 color;
 } push;
@@ -14,5 +15,5 @@ layout(push_constant) uniform Push {
 //Executes once for each vertex
 void main() {
     //Variable that holds output rather than a return. 4D vector; -y is up.
-    gl_Position = vec4(position + push.offset, 0.0, 1.0);
+    gl_Position = vec4(push.transform * position + push.offset, 0.0, 1.0); //Colum major order for applying transformations
 }
