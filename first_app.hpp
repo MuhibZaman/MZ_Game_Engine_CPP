@@ -2,10 +2,9 @@
 #pragma once
 
 #include "lve_window.hpp"
-#include "lve_pipeline.hpp"
 #include "lve_device.hpp"
-#include "lve_swap_chain.hpp"
 #include "lve_game_object.hpp"
+#include "lve_renderer.hpp"
 
 //std
 #include <memory>
@@ -31,24 +30,9 @@ namespace lve {
             //lve window variable using member initialization
             LveWindow lveWindow{WIDTH, HEIGHT, "Hello Vulkan!"}; //No pointer or dynamic memory allocaiton
             LveDevice lveDevice{lveWindow};
-            std::unique_ptr<LveSwapChain> lveSwapChain;
-            std::unique_ptr<LvePipeline> lvePipeline; //Automatic pointer management
-
-            VkPipelineLayout pipelineLayout;
-            std::vector<VkCommandBuffer> commandBuffers;
+            LveRenderer lveRenderer{lveWindow, lveDevice};
             std::vector<LveGameObject> gameObjects;
 
-            void createPipelineLayout();
-            void createPipeline();
-            void createCommandBuffers();
-
-            void drawFrame();
-            void loadGameObjects();
-            void renderGameObjects(VkCommandBuffer commandBuffer);
-
-            void recreateSwapChain();
-            void recordCommandBuffer(int imageIndex);
-            void freeCommandBuffers();
-            
+            void loadGameObjects();            
     };
 } //namespace lve

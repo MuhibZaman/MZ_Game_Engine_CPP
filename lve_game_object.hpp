@@ -1,5 +1,5 @@
 //Game object is anyting in a game that has a collction of properties and methods
-#pragma Once
+#pragma once
 
 #include "lve_model.hpp"
 

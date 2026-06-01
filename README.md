@@ -14,5 +14,6 @@ Current Progress:
         Recreates swapchain when window was resized.
         Pipeline no longer depends on swapchains dimensions due to dynamic viewport and scissor.
     Added push constant implementaion.
-    Added game object class that holds models and transformations
+    Added game object class that holds models and transformations.
+    Created specific renderer and render system classes to allow for more varied render systems depending on specific game ovjects. Also simplifies application class.
     Opens a gray window with a blue sierpinski triangle. Some of the triangles will be spinning clockwise while others counter-clockwise.
