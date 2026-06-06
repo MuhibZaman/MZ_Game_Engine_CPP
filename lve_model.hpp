@@ -16,7 +16,7 @@ namespace lve {
         public:
             struct Vertex {
                 //Interleaved position and color
-                glm::vec2 position;
+                glm::vec3 position;
                 glm::vec3 color;
 
                 static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();

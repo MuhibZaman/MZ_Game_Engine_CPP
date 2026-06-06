@@ -27,7 +27,6 @@ namespace lve {
             VkPipelineLayout pipelineLayout;
 
             void createPipelineLayout();
-            void createPipeline(VkRenderPass renderPass);
-            
+            void createPipeline(VkRenderPass renderPass);            
     };
 } //namespace lve

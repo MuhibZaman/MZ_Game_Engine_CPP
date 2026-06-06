@@ -3,15 +3,15 @@
 
 //No built in output variable; We create the one below ourselves
 layout(location = 0) out vec4 outColor; //Fragment shader can output to multiple locations, we have it set to 0
-//layout(location  = 0) in vec3 fragColor;
+layout(location = 0) in vec3 fragColor;
 
+//matches simple_render_system struct
 layout(push_constant) uniform Push {
-    mat2 transform;
-    vec2 offset;
+    mat4 transform;
     vec3 color;
 } push;
 
 void main() {
     //Red, Green, Blue, and Alpha; 0-1
-    outColor = vec4(push.color, 1.0);
+    outColor = vec4(fragColor, 1.0);
 }

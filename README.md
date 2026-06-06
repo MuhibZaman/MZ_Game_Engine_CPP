@@ -16,4 +16,7 @@ Current Progress:
     Added push constant implementaion.
     Added game object class that holds models and transformations.
     Created specific renderer and render system classes to allow for more varied render systems depending on specific game ovjects. Also simplifies application class.
-    Opens a gray window with a blue sierpinski triangle. Some of the triangles will be spinning clockwise while others counter-clockwise.
+    Changed engine to use 3D position and homogeneous coordinates to apply affine transformation using one 4x4 matrix.
+    
+Output:
+    Opens a gray window with a rotating colorful cube.
