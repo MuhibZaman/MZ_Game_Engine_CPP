@@ -17,6 +17,7 @@ Current Progress:
     Added game object class that holds models and transformations.
     Created specific renderer and render system classes to allow for more varied render systems depending on specific game ovjects. Also simplifies application class.
     Changed engine to use 3D position and homogeneous coordinates to apply affine transformation using one 4x4 matrix.
+    Added a camera class as well as orthographic and perspective projection implementations.
     
 Output:
-    Opens a gray window with a rotating colorful cube.
+    Opens a gray window with a rotating colorful cube viewed in perspective projection.
