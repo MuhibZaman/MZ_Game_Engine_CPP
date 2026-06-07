@@ -10,9 +10,16 @@ namespace lve {
         public:
             void setOrthographicProjection(float left, float right, float top, float bottom, float znear, float zfar);
             void setPerspectiveProjection(float fovy, float aspect, float znear, float zfar);
+            void setViewDirection(glm::vec3 postion, glm::vec3 direction, glm::vec3 up = glm::vec3{0.0f, -1.0f, 0.0f}); //up defaults -y
+            void setViewTarget(glm::vec3 postion, glm::vec3 target, glm::vec3 up = glm::vec3{0.0f, -1.0f, 0.0f}); //For pointing camera at a specific point in space
+            void setViewYXZ(glm::vec3 position, glm::vec3 rotation); //Euler angles to specify orientation of camera using tait-brian
+
+
             const glm::mat4 &getProjection() const { return projectionMatrix; };
+            const glm::mat4 &getView() const { return viewMatrix; };
 
         private:
             glm::mat4 projectionMatrix{1.0f};
+            glm::mat4 viewMatrix {1.0f};
     };
 } //namespace lve
