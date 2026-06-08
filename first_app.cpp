@@ -1,6 +1,7 @@
 #include "first_app.hpp"
 #include "simple_render_system.hpp"
 #include "lve_camera.hpp"
+#include "keyboard_movement_controller.hpp"
 
 //libs
 #define GLM_FORCE_RADIANS
@@ -12,6 +13,7 @@
 #include <stdexcept>
 #include <array>
 #include <iostream>
+#include <chrono>
 
 namespace lve {
     FirstApp::FirstApp() {
@@ -26,11 +28,23 @@ namespace lve {
         //camera.setViewDirection(glm::vec3(0.0f), glm::vec3(0.5f, 0.0f, 1.0f));
         camera.setViewTarget(glm::vec3(-1.0f, -2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 2.5f));
 
+        auto viewerObject = LveGameObject::createGameObject(); //No model and wont be rendered. Just used to store camera state
+        KeyboardMovementController cameraController{};
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
+
         while(!lveWindow.shouldClose()) {
             //Checks for events done on the window
             glfwPollEvents();
+            auto newTime = std::chrono::high_resolution_clock::now(); //After poll events since poll events can pause the application
+            float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+            //frameTime = glm::min(frameTime, MAX_FRAME_TIME); For not having frameTime jumping a large amount if the game gets paused inbetween key presses
+            currentTime = newTime;
+
+            cameraController.moveInPlaneXZ(lveWindow.getGLFWwindow(), frameTime, viewerObject);
+            camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+
             float aspect = lveRenderer.getAspectRatio();
-            //camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
             camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f); //fovy in radians
             if(auto commandBuffer = lveRenderer.beginFrame()) {
                 lveRenderer.beginSwapChainRenderPass(commandBuffer);

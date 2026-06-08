@@ -19,6 +19,7 @@ Current Progress:
     Changed engine to use 3D position and homogeneous coordinates to apply affine transformation using one 4x4 matrix.
     Added a camera class as well as orthographic and perspective projection implementations.
     Added camera view transormation.
+    Added keyboard input for moving camera.
     
 Output:
-    Opens a gray window with a rotating colorful cube.
+    Opens a gray window with a colorful cube. User can move and look around using keybaord input.
