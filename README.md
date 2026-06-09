@@ -21,6 +21,7 @@ Current Progress:
     Added camera view transormation.
     Added keyboard input for moving camera.
     Added mouse input for rotating camera.
+    Added the ability to supply model with an index buffer. Also updated device buffer storing to local storage using a staging buffer.
     
 Output:
     Opens a gray window with a colorful cube. User can move around using keybaord input and look around using mouse movement. Press q to quit.

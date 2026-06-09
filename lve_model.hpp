@@ -23,7 +23,13 @@ namespace lve {
                 static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
             };
 
-            LveModel(LveDevice &device, const std::vector<Vertex> &vertices);
+            struct Builder {
+                //Temporary helper struct holding vertex and index data until it can be loaded into models vertex and index buffer memory
+                std::vector<Vertex> vertices{};
+                std::vector<uint32_t> indices{};
+            };
+
+            LveModel(LveDevice &device, const LveModel::Builder &builder);
             ~LveModel();
 
             LveModel(const LveModel &) = delete;
@@ -34,10 +40,16 @@ namespace lve {
 
         private:
             LveDevice &lveDevice;
+
             VkBuffer vertexBuffer;
             VkDeviceMemory vertexBufferMemory;
             uint32_t vertexCount;
-
             void createVertexBuffers(const std::vector<Vertex> &vertices);
+
+            bool hasIndexBuffer = false; //Can load models with and without index buffer
+            VkBuffer indexBuffer;
+            VkDeviceMemory indexBufferMemory;
+            uint32_t indexCount;
+            void createIndexBuffers(const std::vector<uint32_t> &indices);
     };
 } //namespace lve
