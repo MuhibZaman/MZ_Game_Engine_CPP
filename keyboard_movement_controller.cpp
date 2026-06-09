@@ -2,19 +2,21 @@
 
 namespace lve {
     void KeyboardMovementController::moveInPlaneXZ(GLFWwindow *window, float dt, LveGameObject &gameObject) {
-        glm::vec3 rotate{0.0f};
-        if(glfwGetKey(window, keys.lookRight) == GLFW_PRESS) rotate.y += 1.0f;
-        if(glfwGetKey(window, keys.lookLeft) == GLFW_PRESS) rotate.y -= 1.0f;
-        if(glfwGetKey(window, keys.lookUp) == GLFW_PRESS) rotate.x += 1.0f;
-        if(glfwGetKey(window, keys.lookDown) == GLFW_PRESS) rotate.x -= 1.0f;
+        // glm::vec3 rotate{0.0f};
+        // if(glfwGetKey(window, keys.lookRight) == GLFW_PRESS) rotate.y += 1.0f;
+        // if(glfwGetKey(window, keys.lookLeft) == GLFW_PRESS) rotate.y -= 1.0f;
+        // if(glfwGetKey(window, keys.lookUp) == GLFW_PRESS) rotate.x += 1.0f;
+        // if(glfwGetKey(window, keys.lookDown) == GLFW_PRESS) rotate.x -= 1.0f;
 
-        if(glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
-            gameObject.transform.rotation += lookSpeed * dt * glm::normalize(rotate);
-        }
+        // if(glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
+        //     gameObject.transform.rotation += lookSpeed * dt * glm::normalize(rotate);
+        // }
 
         //Limiting range of object rotate values
-        gameObject.transform.rotation.x = glm::clamp(gameObject.transform.rotation.x, -1.5f, 1.5f); //Keeps objects from going upside down
-        gameObject.transform.rotation.y = glm::mod(gameObject.transform.rotation.y, glm::two_pi<float>()); //Prevents value from overflowing
+        // gameObject.transform.rotation.x = glm::clamp(gameObject.transform.rotation.x, -1.5f, 1.5f); //Keeps objects from going upside down
+        // gameObject.transform.rotation.y = glm::mod(gameObject.transform.rotation.y, glm::two_pi<float>()); //Prevents value from overflowing
+
+        if(glfwGetKey(window, keys.quit) == GLFW_PRESS) glfwSetWindowShouldClose(window, GLFW_TRUE);
 
         float yaw = gameObject.transform.rotation.y;
         const glm::vec3 forwardDir{sin(yaw), 0.0f, cos(yaw)};

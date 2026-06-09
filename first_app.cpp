@@ -2,6 +2,7 @@
 #include "simple_render_system.hpp"
 #include "lve_camera.hpp"
 #include "keyboard_movement_controller.hpp"
+#include "mouse_movement_controller.hpp"
 
 //libs
 #define GLM_FORCE_RADIANS
@@ -30,6 +31,7 @@ namespace lve {
 
         auto viewerObject = LveGameObject::createGameObject(); //No model and wont be rendered. Just used to store camera state
         KeyboardMovementController cameraController{};
+        MouseMovementController cameraRotationController{};
 
         auto currentTime = std::chrono::high_resolution_clock::now();
 
@@ -42,6 +44,7 @@ namespace lve {
             currentTime = newTime;
 
             cameraController.moveInPlaneXZ(lveWindow.getGLFWwindow(), frameTime, viewerObject);
+            cameraRotationController.rotateCamera(lveWindow.getGLFWwindow(), frameTime, viewerObject);
             camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
             float aspect = lveRenderer.getAspectRatio();

@@ -24,6 +24,13 @@ namespace lve {
 
         //Initializing window pointer by creating glfw window
         window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr); //$4 = not full screen
+        
+        //Set mouse cursor mode to disabled
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        if (glfwRawMouseMotionSupported()) {
+            glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+        }
+
         glfwSetWindowUserPointer(window, this);
         glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
     }

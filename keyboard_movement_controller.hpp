@@ -14,11 +14,11 @@ namespace lve {
                 int moveForward = GLFW_KEY_W;
                 int moveBackward = GLFW_KEY_S;
                 int moveUp = GLFW_KEY_SPACE;
-                int moveDown = GLFW_KEY_LEFT_CONTROL;
-                int lookLeft = GLFW_KEY_LEFT;
-                int lookRight = GLFW_KEY_RIGHT;
-                int lookUp = GLFW_KEY_UP;
-                int lookDown = GLFW_KEY_DOWN;
+                int moveDown = GLFW_KEY_LEFT_SHIFT;
+                int quit = GLFW_KEY_Q;
+                // int lookRight = GLFW_KEY_RIGHT;
+                // int lookUp = GLFW_KEY_UP;
+                // int lookDown = GLFW_KEY_DOWN;
             };
         
             KeyMappings keys{};

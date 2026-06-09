@@ -20,6 +20,7 @@ Current Progress:
     Added a camera class as well as orthographic and perspective projection implementations.
     Added camera view transormation.
     Added keyboard input for moving camera.
+    Added mouse input for rotating camera.
     
 Output:
-    Opens a gray window with a colorful cube. User can move and look around using keybaord input.
+    Opens a gray window with a colorful cube. User can move around using keybaord input and look around using mouse movement. Press q to quit.
