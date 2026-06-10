@@ -24,6 +24,7 @@ Current Progress:
     Added mouse input for rotating camera.
     Added the ability to supply model with an index buffer. Also updated device buffer storing to local storage using a staging buffer.
     Added the ability to load wavefront .obj files using tiny_obj_loader.
+    Added diffuse and ambient lighting models to vertex shader.
     
 Output:
-    Opens a gray window with a colorful cube. User can move around using keybaord input and look around using mouse movement. Press q to quit.
+    Opens a gray window with a blocky vase lit from the side. User can move around using keybaord input and look around using mouse movement. Press q to quit.
