@@ -1,5 +1,6 @@
 # MZ_Game_Engine_CPP
 Game Engine from scratch in C++ on Linux
+Following tutorial by Brendan Galea : https://www.youtube.com/watch?v=Y9U9IE0gVHA&list=PL8327DO66nu9qYVKLDmdLW_84-yE4auCR
 
 Build using make
 
@@ -22,6 +23,7 @@ Current Progress:
     Added keyboard input for moving camera.
     Added mouse input for rotating camera.
     Added the ability to supply model with an index buffer. Also updated device buffer storing to local storage using a staging buffer.
+    Added the ability to load wavefront .obj files using tiny_obj_loader.
     
 Output:
     Opens a gray window with a colorful cube. User can move around using keybaord input and look around using mouse movement. Press q to quit.

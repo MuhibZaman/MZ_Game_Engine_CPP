@@ -1,4 +1,5 @@
-CFLAGS = -std=c++17 -O2 -I.
+TINYOBJ_PATH = 
+CFLAGS = -std=c++17 -O2 -I. -I./libs
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
 GLSLC = /usr/bin/glslc
 
