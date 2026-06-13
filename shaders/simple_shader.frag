@@ -7,7 +7,7 @@ layout(location = 0) in vec3 fragColor;
 
 //matches simple_render_system struct
 layout(push_constant) uniform Push {
-    mat4 transform; //Projection * view * model
+    mat4 modelMatrix; //Projection * view * model
     mat4 normalMatrix;
 } push;
 

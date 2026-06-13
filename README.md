@@ -21,11 +21,12 @@ Current Progress:
     Added a camera class as well as orthographic and perspective projection implementations.
     Added camera view transormation.
     Added keyboard input for moving camera.
-    Added mouse input for rotating camera.
+    [CUSTOM]Added mouse input for rotating camera.
     Added the ability to supply model with an index buffer. Also updated device buffer storing to local storage using a staging buffer.
     Added the ability to load wavefront .obj files using tiny_obj_loader.
     Added diffuse and ambient lighting models to vertex shader.
     Set up uniform buffers as an expansion to push constants. Set up descriptor struct for render system to be able to recieve frame information.
+    Added vulkan descriptor sets that can be created and bound to pipeline during pipeline creation.
     
 Output:
     Opens a gray window with a blocky vase lit from the side. User can move around using keybaord input and look around using mouse movement. Press q to quit.
