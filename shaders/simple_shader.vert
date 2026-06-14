@@ -10,7 +10,9 @@ layout(location = 0) out vec3 fragColor; //Color passed to fragment shader
 
 layout(set = 0, binding = 0) uniform GlobalUbo {
     mat4 projectionViewMatrix;
-    vec3 directionToLight;
+    vec4 ambientLightColor;
+    vec3 lightPosition;
+    vec4 lightColor;
 } ubo;
 
 //matches simple_render_system struct
@@ -19,17 +21,24 @@ layout(push_constant) uniform Push {
     mat4 normalMatrix;
 } push;
 
-const float AMBIENT = 0.02;
-
 //Executes once for each vertex
 void main() {
+    //When doing calculation in shader, make sure values occupy the same space
+
+    //Vertex from model space to world space
+    vec4 positionWorld = push.modelMatrix * vec4(position, 1.0);
     //Variable that holds output rather than a return. 4D vector; -y is up.
-    gl_Position = ubo.projectionViewMatrix * push.modelMatrix * vec4(position, 1.0);
+    gl_Position = ubo.projectionViewMatrix * positionWorld;
 
     //Computing world space normals on host
     vec3 normalWorldSpace = normalize(mat3(push.normalMatrix) * normal);
     
-    float lightIntensity = AMBIENT + max(dot(normalWorldSpace, ubo.directionToLight), 0);
+    //Point light calculation
+    vec3 directionToLight = ubo.lightPosition - positionWorld.xyz; //Only taking first three elements of positionWorld
+    float attenuation = 1.0 / dot(directionToLight, directionToLight);
+    vec3 lightColor = ubo.lightColor.xyz * ubo.lightColor.w * attenuation;
+    vec3 ambientLight = ubo.ambientLightColor.xyz * ubo.ambientLightColor.w;
+    vec3 diffuseLight = lightColor * max(dot(normalWorldSpace, normalize(directionToLight)), 0);
     
-    fragColor = lightIntensity * color;
+    fragColor = (diffuseLight + ambientLight) * color;
 }

@@ -21,7 +21,9 @@ namespace lve {
     //Same thing as push constant data struct
     struct GlobalUbo {
         glm::mat4 projectionView{1.0f};
-        glm::vec3 lightDirection = glm::normalize(glm::vec3{1.0f, 3.0f,-1.0f});  
+        glm::vec4 ambientLightColor{1.0f, 1.0f, 1.0f, 0.02f};
+        glm::vec3 lightPosition{-1.0f, -0.5f, 0.0f};
+        alignas(16) glm::vec4 lightcolor{1.0f}; //Last field is intensity
     };
 
     FirstApp::FirstApp() {
@@ -70,6 +72,7 @@ namespace lve {
         camera.setViewTarget(glm::vec3(-1.0f, -2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 2.5f));
 
         auto viewerObject = LveGameObject::createGameObject(); //No model and wont be rendered. Just used to store camera state
+        viewerObject.transform.translation.z = -2.5f;
         KeyboardMovementController cameraController{};
         MouseMovementController cameraRotationController{};
 
@@ -88,7 +91,7 @@ namespace lve {
             camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
             float aspect = lveRenderer.getAspectRatio();
-            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f); //fovy in radians
+            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 100.0f); //fovy in radians
             if(auto commandBuffer = lveRenderer.beginFrame()) {
                 int frameIndex = lveRenderer.getFrameIndex();
                 //Setting up frameInfo
@@ -118,15 +121,31 @@ namespace lve {
     }
 
     void FirstApp::loadGameObjects() {
-        // std::shared_ptr<LveModel> lveModel = LveModel::createModelFromFile(lveDevice, "models/colored_cube.obj");
-        // std::shared_ptr<LveModel> lveModel = LveModel::createModelFromFile(lveDevice, "models/smooth_vase.obj");
         std::shared_ptr<LveModel> lveModel = LveModel::createModelFromFile(lveDevice, "models/flat_vase.obj");
-        auto gameObject = LveGameObject::createGameObject();
+        auto gameObject1 = LveGameObject::createGameObject();
 
-        gameObject.model = lveModel;
-        gameObject.transform.translation = {0.0f, 0.5f, 2.5f};
-        gameObject.transform.scale = glm::vec3(3.0f);
+        gameObject1.model = lveModel;
+        gameObject1.transform.translation = {-0.5f, 0.5f, 0.0f};
+        gameObject1.transform.scale = glm::vec3(3.0f);
 
-        gameObjects.push_back(std::move(gameObject));
+        gameObjects.push_back(std::move(gameObject1));
+
+        lveModel = LveModel::createModelFromFile(lveDevice, "models/smooth_vase.obj");
+        auto gameObject2 = LveGameObject::createGameObject();
+
+        gameObject2.model = lveModel;
+        gameObject2.transform.translation = {0.5f, 0.5f, 0.0f};
+        gameObject2.transform.scale = glm::vec3(3.0f);
+
+        gameObjects.push_back(std::move(gameObject2));
+
+        lveModel = LveModel::createModelFromFile(lveDevice, "models/quad.obj");
+        auto gameObject3 = LveGameObject::createGameObject();
+
+        gameObject3.model = lveModel;
+        gameObject3.transform.translation = {0.0f, 0.55f, 0.0f};
+        gameObject3.transform.scale = glm::vec3(3.0f, 1.0f, 3.0f);
+
+        gameObjects.push_back(std::move(gameObject3));
     }
 } //namespace lve

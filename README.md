@@ -24,9 +24,10 @@ Current Progress:
     [CUSTOM]Added mouse input for rotating camera.
     Added the ability to supply model with an index buffer. Also updated device buffer storing to local storage using a staging buffer.
     Added the ability to load wavefront .obj files using tiny_obj_loader.
-    Added diffuse and ambient lighting models to vertex shader.
+    Added directional lighting with diffuse and ambient models to vertex shader.
     Set up uniform buffers as an expansion to push constants. Set up descriptor struct for render system to be able to recieve frame information.
     Added vulkan descriptor sets that can be created and bound to pipeline during pipeline creation.
-    
+    Added point lighting in vertex shader.
+
 Output:
-    Opens a gray window with a blocky vase lit from the side. User can move around using keybaord input and look around using mouse movement. Press q to quit.
+    Opens a gray window with a 2 vases and a floot being lit by a point light. User can move around using keybaord input and look around using mouse movement. Press q to quit.
