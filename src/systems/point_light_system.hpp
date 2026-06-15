@@ -20,6 +20,7 @@ namespace lve {
             PointLightSystem(const PointLightSystem &) = delete;
             PointLightSystem &operator = (const PointLightSystem &) = delete;
 
+            void update(FrameInfo &frameInfo, GlobalUbo &ubo);
             void render(FrameInfo &frameInfo); //Want to share camera variable amongst multiple render systems
             
         private:

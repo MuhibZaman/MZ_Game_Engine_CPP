@@ -19,15 +19,6 @@
 #include <chrono>
 
 namespace lve {
-    //Same thing as push constant data struct
-    struct GlobalUbo {
-        glm::mat4 projection{1.0f};
-        glm::mat4 view{1.0f};
-        glm::vec4 ambientLightColor{1.0f, 1.0f, 1.0f, 0.02f};
-        glm::vec3 lightPosition{-1.0f, -0.5f, 0.0f};
-        alignas(16) glm::vec4 lightcolor{1.0f}; //Last field is intensity
-    };
-
     FirstApp::FirstApp() {
         //Method chaining / fluent interface
         globalPool = LveDescriptorPool::Builder(lveDevice)
@@ -111,6 +102,7 @@ namespace lve {
                 GlobalUbo ubo{};
                 ubo.projection = camera.getProjection();
                 ubo.view = camera.getView();
+                pointLightSystem.update(frameInfo, ubo);
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
 
@@ -129,29 +121,41 @@ namespace lve {
     void FirstApp::loadGameObjects() {
         std::shared_ptr<LveModel> lveModel = LveModel::createModelFromFile(lveDevice, "models/flat_vase.obj");
         auto gameObject1 = LveGameObject::createGameObject();
-
         gameObject1.model = lveModel;
         gameObject1.transform.translation = {-0.5f, 0.5f, 0.0f};
         gameObject1.transform.scale = glm::vec3(3.0f);
-
         gameObjects.emplace(gameObject1.getId(), std::move(gameObject1));
 
         lveModel = LveModel::createModelFromFile(lveDevice, "models/smooth_vase.obj");
         auto gameObject2 = LveGameObject::createGameObject();
-
         gameObject2.model = lveModel;
         gameObject2.transform.translation = {0.5f, 0.5f, 0.0f};
         gameObject2.transform.scale = glm::vec3(3.0f);
-
         gameObjects.emplace(gameObject2.getId(), std::move(gameObject2));
 
         lveModel = LveModel::createModelFromFile(lveDevice, "models/quad.obj");
         auto gameObject3 = LveGameObject::createGameObject();
-
         gameObject3.model = lveModel;
         gameObject3.transform.translation = {0.0f, 0.55f, 0.0f};
         gameObject3.transform.scale = glm::vec3(3.0f, 1.0f, 3.0f);
-
         gameObjects.emplace(gameObject3.getId(), std::move(gameObject3));
+
+        std::vector<glm::vec3> lightColors{
+            {1.f, .1f, .1f},
+            {.1f, .1f, 1.f},
+            {.1f, 1.f, .1f},
+            {1.f, 1.f, .1f},
+            {.1f, 1.f, 1.f},
+            {1.f, 1.f, 1.f} 
+        };
+
+        for(int i = 0; i < lightColors.size(); i++) {
+            auto pointLight = LveGameObject::makePointLight(0.1f, 0.05f);
+            pointLight.color = lightColors[i];
+            auto rotateLight = glm::rotate(glm::mat4(1.0f), (i * glm::two_pi<float>()) / lightColors.size(), {0.0f, -1.0f, 0.0f});
+            pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.0f, -1.0f, -1.0f, -1.0f));
+            gameObjects.emplace(pointLight.getId(), std::move(pointLight));
+
+        }
     }
 } //namespace lve

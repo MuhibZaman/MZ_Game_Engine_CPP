@@ -31,6 +31,7 @@ Current Progress:
     Moved point light calculation onto fragment shader for more accurate colors.
     Changed project build to use CMake.
     Added point light render system that renders point lights as a billboard.
+    Added the ability to render multiple point lights and push constants to allow for point light updates.
 
 Output:
-    Opens a gray window with a 2 vases and a floot being lit by a point light. User can move around using keybaord input and look around using mouse movement. Press q to quit.
+    Opens a gray window with a 2 vases and a floot being lit by multiple rainbow colored point lights rotating in the air. User can move around using keybaord input and look around using mouse movement. Press q to quit.

@@ -12,6 +12,12 @@
 #include <iostream>
 
 namespace lve {
+    struct PointLightPushConstants {
+        glm::vec4 position{};
+        glm::vec4 color{};
+        float radius;
+    };
+
     PointLightSystem::PointLightSystem(LveDevice &device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout) : lveDevice{device} {
         createPipelineLayout(globalSetLayout);
         createPipeline(renderPass);
@@ -23,10 +29,10 @@ namespace lve {
     }
 
     void PointLightSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout) {
-        // VkPushConstantRange pushConstantRange{};
-        // pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-        // pushConstantRange.offset = 0;
-        // pushConstantRange.size = sizeof(SimplePushConstantData);
+        VkPushConstantRange pushConstantRange{};
+        pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+        pushConstantRange.offset = 0;
+        pushConstantRange.size = sizeof(PointLightPushConstants);
 
         std::vector<VkDescriptorSetLayout> descriptorSetLayouts{globalSetLayout};
 
@@ -34,8 +40,8 @@ namespace lve {
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
         pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data(); //Used to pass data other than vertex data to shaders, ie textures
-        pipelineLayoutInfo.pushConstantRangeCount = 0;
-        pipelineLayoutInfo.pPushConstantRanges = nullptr; //Used to send small amounts of data directly to shaders
+        pipelineLayoutInfo.pushConstantRangeCount = 1;
+        pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange; //Used to send small amounts of data directly to shaders
         
         if(vkCreatePipelineLayout(lveDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error("failed to create pipeline layout");
@@ -59,6 +65,28 @@ namespace lve {
         ); //Path relative to exe directory
     }
 
+    void PointLightSystem::update(FrameInfo &frameInfo, GlobalUbo &ubo) {
+        auto rotateLight = glm::rotate(glm::mat4(1.0f), frameInfo.frameTime, {0.0f, -1.0f, 0.0f});
+
+        int lightIndex = 0;
+        for(auto &kv : frameInfo.gameObjects) {
+            auto &obj = kv.second;
+            if(obj.pointLight == nullptr) continue;
+
+            assert(lightIndex < MAX_LIGHTS && "Point lights exceed maximum specified.");
+
+            //Update light position
+            obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.0f));
+
+            //Copy light to ubo
+            ubo.pointLights[lightIndex].position = glm::vec4(obj.transform.translation, 1.0f);
+            ubo.pointLights[lightIndex].color = glm::vec4(obj.color, obj.pointLight->lightIntensity);
+            lightIndex++;
+        }
+
+        ubo.numLights = lightIndex;
+    }
+
     void PointLightSystem::render(FrameInfo &frameInfo) {
         lvePipeline->bind(frameInfo.commandBuffer);
 
@@ -73,6 +101,25 @@ namespace lve {
             nullptr
         );
 
-        vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+        for(auto &kv : frameInfo.gameObjects) {
+            auto &obj = kv.second;
+            if(obj.pointLight == nullptr) continue;
+            
+            PointLightPushConstants push{};
+            push.position = glm::vec4(obj.transform.translation, 1.0f);
+            push.color = glm::vec4(obj.color, obj.pointLight->lightIntensity);
+            push.radius = obj.transform.scale.x;
+
+            vkCmdPushConstants(
+                frameInfo.commandBuffer,
+                pipelineLayout,
+                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(PointLightPushConstants),
+                &push
+            );
+
+            vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+        }
     }
 } //namespace lve
