@@ -7,6 +7,10 @@
 #include <iostream>
 #include <cassert>
 
+#ifndef ENGINE_DIR
+#define ENGINE_DIR "../"
+#endif
+
 namespace lve {
     LvePipeline::LvePipeline(
                 LveDevice &device,
@@ -25,11 +29,12 @@ namespace lve {
 
     //To read our shader files, we are using an input file stream object
     std::vector<char> LvePipeline::readFile(const std::string& filepath) {
-        std::ifstream file{filepath, std::ios::ate | std::ios::binary}; //ate means to seek to the end immediately, binary means to read file as binary
+        std::string enginePath = ENGINE_DIR + filepath;
+        std::ifstream file{enginePath, std::ios::ate | std::ios::binary}; //ate means to seek to the end immediately, binary means to read file as binary
 
         if(!file.is_open()) {
             //Check path and permissions
-            throw std::runtime_error("failed to open file: " + filepath);
+            throw std::runtime_error("failed to open file: " + enginePath);
         }
 
         size_t fileSize = static_cast<size_t>(file.tellg()); //tellg returns position 

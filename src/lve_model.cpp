@@ -13,6 +13,10 @@
 #include <cstring>
 #include <unordered_map>
 
+#ifndef ENGINE_DIR
+#define ENGINE_DIR "../"
+#endif
+
 namespace std {
     template<>
     struct hash<lve::LveModel::Vertex> {
@@ -34,7 +38,7 @@ namespace lve{
 
         std::unique_ptr<LveModel> LveModel::createModelFromFile(LveDevice &device, const std::string &filepath) {
             Builder builder{};
-            builder.loadModel(filepath);
+            builder.loadModel(ENGINE_DIR + filepath);
 
             return std::make_unique<LveModel>(device, builder);
         }
