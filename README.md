@@ -28,6 +28,7 @@ Current Progress:
     Set up uniform buffers as an expansion to push constants. Set up descriptor struct for render system to be able to recieve frame information.
     Added vulkan descriptor sets that can be created and bound to pipeline during pipeline creation.
     Added point lighting in vertex shader.
+    Moved point light calculation onto fragment shader for more accurate colors.
 
 Output:
     Opens a gray window with a 2 vases and a floot being lit by a point light. User can move around using keybaord input and look around using mouse movement. Press q to quit.

@@ -20,7 +20,7 @@ namespace lve {
             SimpleRenderSystem(const SimpleRenderSystem &) = delete;
             SimpleRenderSystem &operator = (const SimpleRenderSystem &) = delete;
 
-            void renderGameObjects(FrameInfo &frameInfo, std::vector<LveGameObject> &gameObjects); //Want to share camera variable amongst multiple render systems
+            void renderGameObjects(FrameInfo &frameInfo); //Want to share camera variable amongst multiple render systems
             
         private:
             //lve window variable using member initialization

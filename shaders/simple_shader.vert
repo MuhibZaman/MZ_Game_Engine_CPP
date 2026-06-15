@@ -6,7 +6,10 @@ layout(location = 1) in vec3 color; //Color attribute
 layout(location = 2) in vec3 normal; //Normal attribute
 layout(location = 3) in vec2 uv; //UV attribute
 
-layout(location = 0) out vec3 fragColor; //Color passed to fragment shader
+//Values passed to fragment shader
+layout(location = 0) out vec3 fragColor;
+layout(location = 1) out vec3 fragPosWorld;
+layout(location = 2) out vec3 fragNormalWorld;
 
 layout(set = 0, binding = 0) uniform GlobalUbo {
     mat4 projectionViewMatrix;
@@ -27,18 +30,12 @@ void main() {
 
     //Vertex from model space to world space
     vec4 positionWorld = push.modelMatrix * vec4(position, 1.0);
+
     //Variable that holds output rather than a return. 4D vector; -y is up.
     gl_Position = ubo.projectionViewMatrix * positionWorld;
 
-    //Computing world space normals on host
-    vec3 normalWorldSpace = normalize(mat3(push.normalMatrix) * normal);
-    
-    //Point light calculation
-    vec3 directionToLight = ubo.lightPosition - positionWorld.xyz; //Only taking first three elements of positionWorld
-    float attenuation = 1.0 / dot(directionToLight, directionToLight);
-    vec3 lightColor = ubo.lightColor.xyz * ubo.lightColor.w * attenuation;
-    vec3 ambientLight = ubo.ambientLightColor.xyz * ubo.ambientLightColor.w;
-    vec3 diffuseLight = lightColor * max(dot(normalWorldSpace, normalize(directionToLight)), 0);
-    
-    fragColor = (diffuseLight + ambientLight) * color;
+    //Computing world space normals per vertex
+    fragNormalWorld = normalize(mat3(push.normalMatrix) * normal);
+    fragPosWorld = positionWorld.xyz;
+    fragColor = color;
 }

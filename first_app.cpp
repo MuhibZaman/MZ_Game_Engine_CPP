@@ -55,7 +55,7 @@ namespace lve {
 
         //Create sets based on binding frequency
         auto globalSetLayout = LveDescriptorSetLayout::Builder(lveDevice)
-            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
             .build();
 
         std::vector<VkDescriptorSet> globalDescriptorSets(LveSwapChain::MAX_FRAMES_IN_FLIGHT);
@@ -100,7 +100,8 @@ namespace lve {
                     frameTime,
                     commandBuffer,
                     camera,
-                    globalDescriptorSets[frameIndex]
+                    globalDescriptorSets[frameIndex],
+                    gameObjects
                 };
 
                 //update objects phase
@@ -111,7 +112,7 @@ namespace lve {
 
                 //render phase
                 lveRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
+                simpleRenderSystem.renderGameObjects(frameInfo);
                 lveRenderer.endSwapChainRenderPass(commandBuffer);
                 lveRenderer.endFrame();
             }
@@ -128,7 +129,7 @@ namespace lve {
         gameObject1.transform.translation = {-0.5f, 0.5f, 0.0f};
         gameObject1.transform.scale = glm::vec3(3.0f);
 
-        gameObjects.push_back(std::move(gameObject1));
+        gameObjects.emplace(gameObject1.getId(), std::move(gameObject1));
 
         lveModel = LveModel::createModelFromFile(lveDevice, "models/smooth_vase.obj");
         auto gameObject2 = LveGameObject::createGameObject();
@@ -137,7 +138,7 @@ namespace lve {
         gameObject2.transform.translation = {0.5f, 0.5f, 0.0f};
         gameObject2.transform.scale = glm::vec3(3.0f);
 
-        gameObjects.push_back(std::move(gameObject2));
+        gameObjects.emplace(gameObject2.getId(), std::move(gameObject2));
 
         lveModel = LveModel::createModelFromFile(lveDevice, "models/quad.obj");
         auto gameObject3 = LveGameObject::createGameObject();
@@ -146,6 +147,6 @@ namespace lve {
         gameObject3.transform.translation = {0.0f, 0.55f, 0.0f};
         gameObject3.transform.scale = glm::vec3(3.0f, 1.0f, 3.0f);
 
-        gameObjects.push_back(std::move(gameObject3));
+        gameObjects.emplace(gameObject3.getId(), std::move(gameObject3));
     }
 } //namespace lve
