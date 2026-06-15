@@ -77,6 +77,7 @@ namespace lve {
             nullptr
         );
         
+        //Drawing model objects
         for(auto &kv : frameInfo.gameObjects) {
             auto &obj = kv.second;
             if(obj.model == nullptr) continue;
