@@ -11,11 +11,18 @@ layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec3 fragPosWorld;
 layout(location = 2) out vec3 fragNormalWorld;
 
+struct PointLight {
+    vec4 position;
+    vec4 color;
+};
+
 layout(set = 0, binding = 0) uniform GlobalUbo {
-    mat4 projectionViewMatrix;
+    mat4 projection;
+    mat4 view;
+    mat4 inverseView;
     vec4 ambientLightColor;
-    vec3 lightPosition;
-    vec4 lightColor;
+    PointLight pointLights[10];
+    int numLights;
 } ubo;
 
 //matches simple_render_system struct
@@ -32,7 +39,7 @@ void main() {
     vec4 positionWorld = push.modelMatrix * vec4(position, 1.0);
 
     //Variable that holds output rather than a return. 4D vector; -y is up.
-    gl_Position = ubo.projectionViewMatrix * positionWorld;
+    gl_Position = ubo.projection * ubo.view * positionWorld;
 
     //Computing world space normals per vertex
     fragNormalWorld = normalize(mat3(push.normalMatrix) * normal);

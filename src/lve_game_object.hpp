@@ -20,6 +20,10 @@ namespace lve {
         glm::mat3 normalMatrix();
     };
 
+    struct PointLightComponent {
+        float lightIntensity = 1.0f;
+    };
+
     //All game objects will be an instance of this one class
     class LveGameObject {
         public:
@@ -41,6 +45,10 @@ namespace lve {
             std::shared_ptr<LveModel> model{};
             glm::vec3 color{};
             TransformComponent transform{};
+
+            std::unique_ptr<PointLightComponent> pointLight = nullptr;
+
+            static LveGameObject makePointLight(float intensity = 10.0f, float radius = 0.01f, glm::vec3 color = glm::vec3(1.0f));
 
         private:
             LveGameObject(id_t objId) : id{objId} {}
