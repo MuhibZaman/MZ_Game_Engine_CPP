@@ -21,6 +21,8 @@ namespace lve {
         glm::mat4 view{1.0f};
         glm::mat4 inverseView{1.0f};
         glm::vec4 ambientLightColor{1.0f, 1.0f, 1.0f, 0.02f};
+        glm::mat4 lightSpaceMatrix{1.0f};
+        glm::vec4 directionalLightDir{1.0f};
         PointLight pointLights[MAX_LIGHTS];
         int numLights;
     };

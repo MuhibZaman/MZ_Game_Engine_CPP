@@ -4,19 +4,19 @@ Following tutorial by Brendan Galea : https://www.youtube.com/watch?v=Y9U9IE0gVH
 
 Build using make
 
-Current Progress:
+Tutorial Progress:
     Completed graphics pipeline creation.
     Pipeline configuration complete.
     Command Buffer creation and recording complete.
-    Makefile now also compiled shaders.
+    Makefile now also compiles shaders.
     Implemented vertex buffer, removing the need for hard coded vertices. Vertex color are also passed to fragment shader for interpolation and rendering.
     Window can now be resized.
         Added call back to glfw window that listens for window resizing.
         Recreates swapchain when window was resized.
         Pipeline no longer depends on swapchains dimensions due to dynamic viewport and scissor.
-    Added push constant implementaion.
+    Ad nt implementaion.
     Added game object class that holds models and transformations.
-    Created specific renderer and render system classes to allow for more varied render systems depending on specific game ovjects. Also simplifies application class.
+    Created specific renderer and render system classes to allow for more varied render systems depending on specific game objects. Also simplifies application class.
     Changed engine to use 3D position and homogeneous coordinates to apply affine transformation using one 4x4 matrix.
     Added a camera class as well as orthographic and perspective projection implementations.
     Added camera view transormation.
@@ -33,6 +33,9 @@ Current Progress:
     Added point light render system that renders point lights as a billboard.
     Added the ability to render multiple point lights and push constants to allow for point light updates.
     Added specilar lighting model.
+
+Custom Progress:
+    Added cast shadows. Created seperate shadow render system that creates a shadow map from one directional light. Fragment shader then renders fragments whether or not they are in shadow from the directional light.
 
 Output:
     Opens a gray window with a 2 vases and a floot being lit by multiple rainbow colored point lights rotating in the air. User can move around using keybaord input and look around using mouse movement. Press q to quit.

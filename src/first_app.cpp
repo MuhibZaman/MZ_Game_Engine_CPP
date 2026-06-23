@@ -1,6 +1,7 @@
 #include "first_app.hpp"
 #include "systems/simple_render_system.hpp"
 #include "systems/point_light_system.hpp"
+#include "systems/shadow_render_system.hpp"
 #include "lve_camera.hpp"
 #include "keyboard_movement_controller.hpp"
 #include "mouse_movement_controller.hpp"
@@ -24,6 +25,7 @@ namespace lve {
         globalPool = LveDescriptorPool::Builder(lveDevice)
             .setMaxSets(LveSwapChain::MAX_FRAMES_IN_FLIGHT)
             .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, LveSwapChain::MAX_FRAMES_IN_FLIGHT)
+            .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, LveSwapChain::MAX_FRAMES_IN_FLIGHT)
             .build();
 
         loadGameObjects();
@@ -49,16 +51,20 @@ namespace lve {
         //Create sets based on binding frequency
         auto globalSetLayout = LveDescriptorSetLayout::Builder(lveDevice)
             .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
+            .addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
             .build();
 
         std::vector<VkDescriptorSet> globalDescriptorSets(LveSwapChain::MAX_FRAMES_IN_FLIGHT);
         for(int i = 0; i < globalDescriptorSets.size(); i++) {
             auto bufferInfo = uboBuffers[i]->descriptorInfo();
+            auto shadowImageInfo = lveShadowMap.getDescriptorImageInfo();
             LveDescriptorWriter(*globalSetLayout, *globalPool)
                 .writeBuffer(0, &bufferInfo)
+                .writeImage(1, &shadowImageInfo)
                 .build(globalDescriptorSets[i]);
         }
 
+        ShadowRenderSystem shadowRenderSystem{lveDevice, lveShadowMap, globalSetLayout->getDescriptorSetLayout()};
         SimpleRenderSystem simpleRenderSystem{lveDevice, lveRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout()};
         PointLightSystem pointLightSystem{lveDevice, lveRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout()};
         LveCamera camera{};
@@ -104,8 +110,12 @@ namespace lve {
                 ubo.view = camera.getView();
                 ubo.inverseView = camera.getInverseView();
                 pointLightSystem.update(frameInfo, ubo);
+                shadowRenderSystem.update(frameInfo, ubo);
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
+
+                //shadow render
+                shadowRenderSystem.render(frameInfo);
 
                 //render phase
                 lveRenderer.beginSwapChainRenderPass(commandBuffer);
@@ -123,7 +133,9 @@ namespace lve {
     }
 
     void FirstApp::loadGameObjects() {
-        std::shared_ptr<LveModel> lveModel = LveModel::createModelFromFile(lveDevice, "models/flat_vase.obj");
+        std::shared_ptr<LveModel> lveModel;
+
+        lveModel = LveModel::createModelFromFile(lveDevice, "models/flat_vase.obj");
         auto gameObject1 = LveGameObject::createGameObject();
         gameObject1.model = lveModel;
         gameObject1.transform.translation = {-0.5f, 0.5f, 0.0f};
@@ -140,7 +152,7 @@ namespace lve {
         lveModel = LveModel::createModelFromFile(lveDevice, "models/quad.obj");
         auto gameObject3 = LveGameObject::createGameObject();
         gameObject3.model = lveModel;
-        gameObject3.transform.translation = {0.0f, 0.55f, 0.0f};
+        gameObject3.transform.translation = {0.0f, 1.0f, 0.0f};
         gameObject3.transform.scale = glm::vec3(3.0f, 1.0f, 3.0f);
         gameObjects.emplace(gameObject3.getId(), std::move(gameObject3));
 
@@ -159,7 +171,6 @@ namespace lve {
             auto rotateLight = glm::rotate(glm::mat4(1.0f), (i * glm::two_pi<float>()) / lightColors.size(), {0.0f, -1.0f, 0.0f});
             pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.0f, -1.0f, -1.0f, -1.0f));
             gameObjects.emplace(pointLight.getId(), std::move(pointLight));
-
         }
     }
 } //namespace lve

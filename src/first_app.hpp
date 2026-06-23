@@ -6,6 +6,7 @@
 #include "lve_game_object.hpp"
 #include "lve_renderer.hpp"
 #include "lve_descriptors.hpp"
+#include "lve_shadow_map.hpp"
 
 //std
 #include <memory>
@@ -32,6 +33,7 @@ namespace lve {
             LveWindow lveWindow{WIDTH, HEIGHT, "Hello Vulkan!"}; //No pointer or dynamic memory allocaiton
             LveDevice lveDevice{lveWindow};
             LveRenderer lveRenderer{lveWindow, lveDevice};
+            LveShadowMap lveShadowMap{lveDevice};
 
             //Order of declerations matter
             std::unique_ptr<LveDescriptorPool> globalPool{};
