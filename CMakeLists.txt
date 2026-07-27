@@ -65,6 +65,18 @@ endif()
 file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
  
 add_executable(${PROJECT_NAME} ${SOURCES})
+
+# Automatically copy shaders and models to output directory after build
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/shaders"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/shaders"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/models"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/models"
+)
+
+add_dependencies(${PROJECT_NAME} Shaders)
  
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
  

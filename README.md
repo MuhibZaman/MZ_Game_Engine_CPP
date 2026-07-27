@@ -2,40 +2,21 @@
 Game Engine from scratch in C++ on Linux
 Following tutorial by Brendan Galea : https://www.youtube.com/watch?v=Y9U9IE0gVHA&list=PL8327DO66nu9qYVKLDmdLW_84-yE4auCR
 
-Build using make
+Build Instructions:
+Install VulkanSDK, GLFW, GLM, and GLSLC following vulkan-tutorial: https://vulkan-tutorial.com/Development_environment
 
-Tutorial Progress:
-    Completed graphics pipeline creation.
-    Pipeline configuration complete.
-    Command Buffer creation and recording complete.
-    Makefile now also compiles shaders.
-    Implemented vertex buffer, removing the need for hard coded vertices. Vertex color are also passed to fragment shader for interpolation and rendering.
-    Window can now be resized.
-        Added call back to glfw window that listens for window resizing.
-        Recreates swapchain when window was resized.
-        Pipeline no longer depends on swapchains dimensions due to dynamic viewport and scissor.
-    Ad nt implementaion.
-    Added game object class that holds models and transformations.
-    Created specific renderer and render system classes to allow for more varied render systems depending on specific game objects. Also simplifies application class.
-    Changed engine to use 3D position and homogeneous coordinates to apply affine transformation using one 4x4 matrix.
-    Added a camera class as well as orthographic and perspective projection implementations.
-    Added camera view transormation.
-    Added keyboard input for moving camera.
-    [CUSTOM]Added mouse input for rotating camera.
-    Added the ability to supply model with an index buffer. Also updated device buffer storing to local storage using a staging buffer.
-    Added the ability to load wavefront .obj files using tiny_obj_loader.
-    Added directional lighting with diffuse and ambient models to vertex shader.
-    Set up uniform buffers as an expansion to push constants. Set up descriptor struct for render system to be able to recieve frame information.
-    Added vulkan descriptor sets that can be created and bound to pipeline during pipeline creation.
-    Added point lighting in vertex shader.
-    Moved point light calculation onto fragment shader for more accurate colors.
-    Changed project build to use CMake.
-    Added point light render system that renders point lights as a billboard.
-    Added the ability to render multiple point lights and push constants to allow for point light updates.
-    Added specilar lighting model.
+Linux:
+Simply run unixBuild.sh.
+*Project was only tested on Pop!OS 24.04 running COSMIC Wayland.
 
-Custom Progress:
-    Added cast shadows. Created seperate shadow render system that creates a shadow map from one directional light. Fragment shader then renders fragments whether or not they are in shadow from the directional light.
-
-Output:
-    Opens a gray window with a 2 vases and a floot being lit by multiple rainbow colored point lights rotating in the air. User can move around using keybaord input and look around using mouse movement. Press q to quit.
+Windows:
+Make sure .env.cmake variables point to your installation paths.
+From the MZ_Game_Engine+CPP directory, run:
+Initial set up:
+    mkdir build-windows
+    cd build-windows
+    cmake ..
+Build:
+    cd build-windows
+    cmake --build . --config Release
+    & "D:\Game Engine CPP\MZ_Game_Engine_CPP\build-windows\Release\LveEngine.exe"
